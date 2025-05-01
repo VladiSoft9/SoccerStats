@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SoccerStats</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header>
+    <h1>Soccer Stats</h1>
+  </header>
+  
+  <main class="container">
+        <button id="welcome">
+          <a href="#" class="btn2"><span class="spn2">WELCOME TO THE SOCCER STATS APP !</span></a>
+        </button><br><br>
+        <div class="playerSearch">
+          <input type="text" id="player">
+          <button onclick="getPlayerStats()">Search</button>
+        </div><br><br>
+        <div id="PlCard">
+          <p>player data</p>
+        </div>
+        <br><br>
+        <button>Check the info about player's team</button><br><br>
+        <div id="ClCard" class="ClCard">
+          <p>club data</p>
+        </div>
+  </main>
+      <script src="code.js"></script>
+</body>
+</html>
