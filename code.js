@@ -2,6 +2,8 @@ const PlCard = document.getElementById('PlCard')
 const ClCard = document.getElementById('ClCard')
 
 
+// Fetching and showing data about the players
+
 async function getPlayerStats() {
     const player = document.getElementById('player').value
     const apiKey = 'd93580e4f024b16c3dd0133b3c6505cc5704838560a22aa9290d963dbd5ac26a';
@@ -16,23 +18,27 @@ async function getPlayerStats() {
         }
         const data = await response.json()
         console.log(data)
-        displayResult(data)
+        displayResultPlayer(data)
 
     }
     catch(error){
         console.error()
-        displayError()
+        displayErrorPlayer()
     }
 }
 
-function displayResult(data){
+function displayResultPlayer(data){
 
     
     const player0 = data[0]
     const player1 = data[1]
 
-    const {player_name, player_image, player_age, player_birthdate, player_type, player_rating, player_goals, team_name, player_saves, player_inside_box_saves, player_goals_conceded, player_assists, player_passes, player_passes_accuracy, player_interceptions} = player1
+    const {player_name, player_image, player_age, player_birthdate, player_type, player_rating, player_goals, team_name, player_saves, player_inside_box_saves, player_goals_conceded, player_assists, player_passes, player_passes_accuracy, player_interceptions, team_key} = player1
     const {player_tackles} = player0
+
+    // Clear previous data before adding new data
+    PlCard.textContent = ""
+    ClCard.textContent = ""
     
 
     const PlImage = document.createElement('img')
@@ -118,6 +124,12 @@ function displayResult(data){
     PlTeam.textContent = `Team or Country: ${team_name}`
     PlCard.appendChild(PlTeam)
 
+    const PlTeamKey = document.createElement('p')
+    PlTeamKey.setAttribute('id', 'teamKey')
+    PlTeamKey.textContent = team_key
+    PlTeamKey.style.display = 'none'
+    PlCard.appendChild(PlTeamKey)
+
     const PlSaves = document.createElement('p')
     if(player_type == 'Goalkeepers'){
         PlSaves.textContent = `Total saves: ${player_saves}`
@@ -139,8 +151,94 @@ function displayResult(data){
 
 }
 
-function displayError(){
-    const errorDisplay = document.createElement('h2')
-    errorDisplay.textContent = 'Sorry! This player is not in our system! Try some other name!'
-    PlCard.appendChild(errorDisplay)
+function displayErrorPlayer(){
+
+    // Clear previous data before adding new data
+    PlCard.textContent = ""
+    ClCard.textContent = ""
+
+    const errorDisplayPlayer = document.createElement('h2')
+    errorDisplayPlayer.textContent = 'Sorry! This player is not in our system! Try some other name!'
+    PlCard.appendChild(errorDisplayPlayer)
 }
+
+// Fetching and showing data about the teams
+
+async function getTeamStats() {
+    const team = document.getElementById('teamKey').textContent
+    const apiKey = 'd93580e4f024b16c3dd0133b3c6505cc5704838560a22aa9290d963dbd5ac26a';
+    const urlTeam = `https://apiv3.apifootball.com/?action=get_teams&team_id=${team}&APIkey=${apiKey}`
+    
+
+
+    try{
+        const response = await fetch(urlTeam)
+        if(!response.ok){
+            throw new Error('Could not fetch the stats!')
+        }
+        const TeamData = await response.json()
+        console.log(TeamData)
+        displayResultTeam(TeamData)
+        
+
+    }
+    catch(error){
+        console.error()
+        displayErrorTeam()
+        
+    }
+}
+
+function displayResultTeam(TeamData){
+
+    const [{team_name, team_badge, team_founded, team_country, venue: {venue_name, venue_city, venue_capacity }, coaches: [{coach_name}] }] = TeamData
+
+    // Clear previous data before adding new data
+    ClCard.textContent = ""
+    
+
+    const TeImage = document.createElement('img')
+    TeImage.src = team_badge
+    TeImage.alt = 'No image available!'
+    TeImage.style.display = 'block'
+    ClCard.appendChild(TeImage)
+
+
+    const TeName = document.createElement('h2')
+    TeName.textContent = team_name
+    ClCard.appendChild(TeName)
+
+    const TeYear = document.createElement('p')
+    TeYear.textContent = `Year founded: ${team_founded}`
+    ClCard.appendChild(TeYear)
+
+    const TeCountry = document.createElement('p')
+    TeCountry.textContent = `Team Country: ${team_country}`
+    ClCard.appendChild(TeCountry)
+
+    const TeStadiumName = document.createElement('p')
+    TeStadiumName.textContent = `Home ground: ${venue_name} - ${venue_city}`
+    ClCard.appendChild(TeStadiumName)
+
+    const TeStadiumCapac = document.createElement('p')
+    TeStadiumCapac.textContent = `Ground capacity: ${venue_capacity} people`
+    ClCard.appendChild(TeStadiumCapac)
+
+    const TeCoach = document.createElement('p')
+    TeCoach.textContent = `Head coach: ${coach_name}`
+    ClCard.appendChild(TeCoach)
+
+}
+
+function displayErrorTeam(){
+
+    // Clear previous data before adding new data
+    ClCard.textContent = ""
+
+    const errorDisplayTeam = document.createElement('h2')
+    errorDisplayTeam.textContent = 'Sorry! This team is not in our system!'
+    ClCard.appendChild(errorDisplayTeam)
+}
+ 
+
+
