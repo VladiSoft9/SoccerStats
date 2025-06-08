@@ -17,7 +17,6 @@ async function getPlayerStats() {
             throw new Error('Could not fetch the stats!')
         }
         const data = await response.json()
-        console.log(data)
         displayResultPlayer(data)
 
     }
@@ -33,12 +32,14 @@ function displayResultPlayer(data){
     const player0 = data[0]
     const player1 = data[1]
 
-    const {player_name, player_image, player_age, player_birthdate, player_type, player_rating, player_goals, team_name, player_saves, player_inside_box_saves, player_goals_conceded, player_assists, player_passes, player_passes_accuracy, player_interceptions, team_key} = player1
-    const {player_tackles} = player0
+    const {player_name, player_image, player_age, player_birthdate, player_type, player_rating, player_goals, team_name, player_saves, player_inside_box_saves, player_goals_conceded, player_assists, player_passes, player_passes_accuracy, player_interceptions, team_key} = player0
+    const {player_tackles} = player1
 
-    // Clear previous data before adding new data
+    // Clear previous data before adding new data, ensuring that TSbutton is shown and that empty ClCard is not shown
     PlCard.textContent = ""
     ClCard.textContent = ""
+    ClCard.style.display = 'none'
+    document.getElementById('TSButton').style.display = 'block'
     
 
     const PlImage = document.createElement('img')
@@ -132,20 +133,37 @@ function displayResultPlayer(data){
 
     const PlSaves = document.createElement('p')
     if(player_type == 'Goalkeepers'){
-        PlSaves.textContent = `Total saves: ${player_saves}`
+        if(!player_saves == ''){
+            PlSaves.textContent = `Total saves: ${player_saves}`
+        }
+        else{
+            PlSaves.textContent = `Total saves: No current record!`
+        }
         PlCard.appendChild(PlSaves)
     }
     
 
     const PlIBSaves = document.createElement('p')
     if(player_type == 'Goalkeepers'){
-        PlIBSaves.textContent = `Total 'inside-box' saves: ${player_inside_box_saves}`
+        if(!player_inside_box_saves == ''){
+            PlIBSaves.textContent = `Total 'inside-box' saves: ${player_inside_box_saves}`
+        }
+        else{
+            PlIBSaves.textContent = `Total 'inside-box' saves: No current record!`
+        }
+        
         PlCard.appendChild(PlIBSaves)
     }
 
    const PlGConceded = document.createElement('p')
    if(player_type == 'Goalkeepers'){
-       PlGConceded.textContent = `Total goals conceded: ${player_goals_conceded}`
+        if(!player_goals_conceded == ''){
+            PlGConceded.textContent = `Total goals conceded: ${player_goals_conceded}`
+        }
+        else{
+            PlGConceded.textContent = `Total goals conceded: No current record!`
+        }
+       
        PlCard.appendChild(PlGConceded)
     }
 
@@ -156,9 +174,11 @@ function displayErrorPlayer(){
     // Clear previous data before adding new data
     PlCard.textContent = ""
     ClCard.textContent = ""
+    document.getElementById('TSButton').style.display = 'none'
+    ClCard.style.display = 'none'
 
     const errorDisplayPlayer = document.createElement('h2')
-    errorDisplayPlayer.textContent = 'Sorry! This player is not in our system! Try some other name!'
+    errorDisplayPlayer.textContent = 'Sorry! This player is not in our system!'
     PlCard.appendChild(errorDisplayPlayer)
 }
 
@@ -177,7 +197,6 @@ async function getTeamStats() {
             throw new Error('Could not fetch the stats!')
         }
         const TeamData = await response.json()
-        console.log(TeamData)
         displayResultTeam(TeamData)
         
 
@@ -193,8 +212,9 @@ function displayResultTeam(TeamData){
 
     const [{team_name, team_badge, team_founded, team_country, venue: {venue_name, venue_city, venue_capacity }, coaches: [{coach_name}] }] = TeamData
 
-    // Clear previous data before adding new data
+    // Clear previous data before adding new data and ensuring that ClCard is shown
     ClCard.textContent = ""
+    ClCard.style.display = 'block'
     
 
     const TeImage = document.createElement('img')
@@ -232,8 +252,9 @@ function displayResultTeam(TeamData){
 
 function displayErrorTeam(){
 
-    // Clear previous data before adding new data
+    // Clear previous data before adding new data and ensuring that ClCard is shown
     ClCard.textContent = ""
+    ClCard.style.display = 'block'
 
     const errorDisplayTeam = document.createElement('h2')
     errorDisplayTeam.textContent = 'Sorry! This team is not in our system!'
